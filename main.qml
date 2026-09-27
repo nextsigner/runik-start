@@ -25,7 +25,6 @@ Window {
             spacing: app.fs*0.5
             anchors.centerIn: parent
             Text{
-                id: labelAppId
                 text: "RUNIK-START"
                 font.pixelSize: app.fs
                 color: apps.fontColor
