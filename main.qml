@@ -4,8 +4,8 @@ import QtCore
 import unik.Unik 1.0
 Window {
     id: app
-    width: 640
-    height: 480
+    width: Qt.platform.os==='android'?640:608
+    height: Qt.platform.os==='android'?480:1080
     visible: true
     title: !isRunikStart?"Runik":"Runik!"
     color: apps.backgroundColor
@@ -33,6 +33,7 @@ Window {
             }
             TextInput{
                 id: tiAppId
+                //text: 'https://github.com/nextsigner/semitimes-m1'
                 width: app.width-app.fs
                 height: app.fs*1.2
                 font.pixelSize: app.fs
@@ -46,35 +47,47 @@ Window {
                     anchors.centerIn: parent
                 }
             }
-            Button{
-                id: btnCargar
-                text: "Cargar"
-                font.pixelSize: app.fs
+            Row{
+                spacing: app.fs*0.5
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    let urlZipFile
-                    if(tiAppId.text.indexOf('https:')===0){
-                        let url=tiAppId.text
-                        urlZipFile=getGitHubZipUrl(url)
-                        let m0=url.split('/')
-                        let pn=m0[m0.length-1]
-                        unikObj.downloadGitHubZip(urlZipFile, pn+"_main.zip");
-                    }else{
-                        for(var i=0;i<app.uAppsList.length;i++){
-                            let linea=app.uAppsList[i]
-                            if(linea.length>3){
-                                let args=linea.split(' ')
-                                if(args[0]===tiAppId.text){
-                                    unikObj.cProject=args[1]
-                                    urlZipFile=getGitHubZipUrl(args[2])
-                                    statusText.text='Descargando '+urlZipFile
-                                    unikObj.downloadGitHubZip(urlZipFile, args[1]+"_main.zip");
+                Button{
+                    text: "Historial"
+                    font.pixelSize: app.fs
+                    onClicked: {
+                        getHistorial()
+                    }
+                }
+                Button{
+                    id: btnCargar
+                    text: "Cargar"
+                    font.pixelSize: app.fs
+                    onClicked: {
+                        let urlZipFile
+                        if(tiAppId.text.indexOf('https:')===0){
+                            let url=tiAppId.text
+                            urlZipFile=getGitHubZipUrl(url)
+                            let m0=url.split('/')
+                            let pn=m0[m0.length-1]
+                            unikObj.cProject=pn
+                            setHistorial(tiAppId.text)
+                            unikObj.downloadGitHubZip(urlZipFile, pn+"_main.zip");
+                        }else{
+                            for(var i=0;i<app.uAppsList.length;i++){
+                                let linea=app.uAppsList[i]
+                                if(linea.length>3){
+                                    let args=linea.split(' ')
+                                    if(args[0]===tiAppId.text){
+                                        unikObj.cProject=args[1]
+                                        urlZipFile=getGitHubZipUrl(args[2])
+                                        statusText.text='Descargando '+urlZipFile
+                                        setHistorial(tiAppId.text)
+                                        unikObj.downloadGitHubZip(urlZipFile, args[1]+"_main.zip");
+
+                                    }
                                 }
                             }
                         }
-
                     }
-
                 }
             }
             ProgressBar {
@@ -111,9 +124,59 @@ Window {
                 wrapMode: Text.WordWrap
                 font.pixelSize: app.fs
                 color: apps.fontColor
-                visible: !app.isRunikStart
+                visible: !app.isRunikStart  && Qt.application.arguments.indexOf('-dev')<0
             }
 
+        }
+        Rectangle{
+            id: xHistorial
+            color: apps.backgroundColor
+            border.width: 2
+            border.color: apps.fontColor
+            anchors.fill: parent
+            visible: false
+            ListView{
+                id: lv
+                spacing: app.fs*0.25
+                anchors.fill: parent
+                model: lm
+                delegate: compLv
+                anchors.top: parent.top
+                ListModel{
+                    id: lm
+                    function addItem(d){
+                        return{
+                            dato: d
+                        }
+                    }
+                }
+                Component{
+                    id: compLv
+                    Rectangle{
+                        width: lv.width-app.fs
+                        height: app.fs*1.5//*0.65
+                        color: 'transparent'
+                        border.width: 1
+                        border.color: apps.fontColor
+                        radius: app.fs*0.25
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        MouseArea{
+                            anchors.fill: parent
+                            onClicked: {
+                                tiAppId.text=dato
+                                xHistorial.visible=false
+
+                            }
+                        }
+                        Text{
+                            text: dato
+                            font.pixelSize: app.fs
+                            color: apps.fontColor
+                            anchors.centerIn: parent
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -176,10 +239,11 @@ Window {
 
     }
     Component.onCompleted: {
-        if(!app.isRunikStart){
+        if(!app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0){
             tiAppId.text="0"
         }
         getAppsList()
+        tiAppId.focus=true
     }
 
     /*Component.onCompleted: {
@@ -212,7 +276,7 @@ Window {
                 statusText.text = "¡Archivo cargado con éxito!";
                 statusText.text+='\n'+data
                 app.uAppsList=data.split('\n')
-                if(!app.isRunikStart){
+                if(!app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0){
                     btnCargar.clicked()
                 }
             } else {
@@ -268,5 +332,43 @@ Window {
         // Si la URL ya es más específica (ej. incluye /tree/main o /blob/main), la adaptamos
         // O si no coincide con el formato básico, devolvemos cadena vacía o intentamos parsear
         return "";
+    }
+    function setHistorial(dato){
+        let s=''
+        let fp=unikObj.getPath(4)+'/historial.txt'
+        let fd=''//unikObj.getFile(fp)
+        if(unikObj.fileExist(fp)){
+            fd=unikObj.getFile(fp)
+        }else{
+            fd=''
+        }
+        let lines=fd.split('\n')
+        for(var i=0;i<lines.length;i++){
+            if(lines[i]!==dato){
+                s+=lines[i]+'\n'
+            }
+        }
+        s+=dato+'\n'
+        unikObj.setFile(fp, s)
+        console.log('Se guarda historial: '+fp)
+    }
+    function getHistorial(){
+        let cant=0
+        let fp=unikObj.getPath(4)+'/historial.txt'
+        let fd=unikObj.getFile(fp)
+        if(fd==='error'){
+            return
+        }
+        let lines=fd.split('\n')
+        for(var i=0;i<lines.length;i++){
+            if(lines[i]!=='\n'&&lines[i].length>1){
+                lm.append(lm.addItem(lines[i]))
+                cant++
+            }
+        }
+        if(cant>0){
+            xHistorial.visible=true
+        }
+
     }
 }
