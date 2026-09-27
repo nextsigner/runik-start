@@ -1,0 +1,1 @@
+i7: Se sube main.qml
