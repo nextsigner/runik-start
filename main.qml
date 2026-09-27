@@ -138,7 +138,10 @@ Window {
             ListView{
                 id: lv
                 spacing: app.fs*0.25
-                anchors.fill: parent
+                //anchors.fill: parent
+                width: parent.width
+                height: parent.height*0.9
+                anchors.centerIn: parent
                 model: lm
                 delegate: compLv
                 anchors.top: parent.top
