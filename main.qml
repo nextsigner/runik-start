@@ -165,8 +165,8 @@ Window {
                         border.color: apps.fontColor
                         radius: app.fs*0.25
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.top: parent.top
-                        anchors.topMargin: app.fs
+                        //anchors.top: parent.top
+                        //anchors.topMargin: app.fs
                         MouseArea{
                             anchors.fill: parent
                             onClicked: {
