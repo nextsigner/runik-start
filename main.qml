@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtCore
 import unik.Unik 1.0
+import QtMultimedia
 Window {
     id: app
     width: Qt.platform.os==='android'?640:608
@@ -33,7 +34,7 @@ Window {
             }
             TextInput{
                 id: tiAppId
-                //text: 'https://github.com/nextsigner/semitimes-m1'
+                text: apps.uIdApp//'https://github.com/nextsigner/semitimes-m1'
                 width: app.width-app.fs
                 height: app.fs*1.2
                 font.pixelSize: app.fs
@@ -137,14 +138,15 @@ Window {
             visible: false
             ListView{
                 id: lv
-                spacing: app.fs*0.25
-                //anchors.fill: parent
+                spacing: app.fs
                 width: parent.width
                 height: parent.height*0.9
-                anchors.centerIn: parent
+                //anchors.centerIn: parent
                 model: lm
                 delegate: compLv
+                anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
+                anchors.topMargin: app.fs
                 ListModel{
                     id: lm
                     function addItem(d){
@@ -163,6 +165,8 @@ Window {
                         border.color: apps.fontColor
                         radius: app.fs*0.25
                         anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: parent.top
+                        anchors.topMargin: app.fs
                         MouseArea{
                             anchors.fill: parent
                             onClicked: {
@@ -223,6 +227,7 @@ Window {
                         msg+='\nArchivos: '+files.toString()
                         let mainFile=folderQml+'/main.qml'
                         engine.load(mainFile)
+                        apps.uIdApp=tiAppId.text
                         app.close()
                         console.log(msg)
                         statusText.text=msg
@@ -242,6 +247,25 @@ Window {
 
     }
     Component.onCompleted: {
+        if(Qt.application.arguments.toString().indexOf('-folder')>=0){
+            let folder=''
+            for(var i=0;i<Qt.application.arguments.length;i++){
+                let arg=Qt.application.arguments[i]
+                if(arg.indexOf('-folder=')===0){
+                    let m0=arg.split('-folder=')
+                    folder=m0[1]
+                    break
+                }
+            }
+            let mainPath=folder+'/main.qml'
+            if(unikObj.fileExist(mainPath)){
+                engine.load(mainPath)
+                app.close()
+                return
+            }else{
+                statusText.text="El archivo "+mainPath+' no existe!'
+            }
+        }
         if(!app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0){
             tiAppId.text="0"
         }
