@@ -3,6 +3,23 @@ import QtQuick.Controls
 import QtCore
 import unik.Unik 1.0
 import QtMultimedia
+
+//import Qt.labs.calendar
+import Qt.labs.folderlistmodel
+import Qt.labs.platform
+//import Qt.labs.settings
+
+/*
+import Qt.WebSockets
+import Qt3D.Animation
+import Qt3D.Core
+import Qt3D.Extras
+import Qt3D.Input
+import Qt3D.Logic
+import Qt3D.Render
+import Qt3D.Scene2D
+*/
+
 Window {
     id: app
     width: Qt.platform.os==='android'?640:608
@@ -12,7 +29,7 @@ Window {
     color: apps.backgroundColor
     property int fs: width*0.035
     property var uAppsList: []
-    property bool isRunikStart: true
+    property bool isRunikStart: false
     Settings{
         id: apps
         property color backgroundColor: 'black'
@@ -22,10 +39,19 @@ Window {
     Rectangle{
         id: xApp
         color: 'transparent'
-        anchors.fill: parent
+        //anchors.fill: parent
+        width: parent.width-app.fs*4
+        height: parent.height-app.fs*6
+        anchors.centerIn: parent
         Column{
             spacing: app.fs*0.5
             anchors.centerIn: parent
+            Text{
+                text: app.title
+                font.pixelSize: app.fs
+                color: apps.fontColor
+            }
+            Item{width: 1; height: app.fs*3}
             Text{
                 id: labelAppId
                 text: "Ingresar nombre, url o código de la aplicación:"
@@ -158,6 +184,7 @@ Window {
                 Component{
                     id: compLv
                     Rectangle{
+                        id: xItemLv
                         width: lv.width-app.fs
                         height: app.fs*1.5//*0.65
                         color: 'transparent'
@@ -165,14 +192,30 @@ Window {
                         border.color: apps.fontColor
                         radius: app.fs*0.25
                         anchors.horizontalCenter: parent.horizontalCenter
-                        //anchors.top: parent.top
-                        //anchors.topMargin: app.fs
                         MouseArea{
                             anchors.fill: parent
                             onClicked: {
                                 tiAppId.text=dato
                                 xHistorial.visible=false
 
+                            }
+                        }
+                        Rectangle{
+                            width: parent.height-4
+                            height: parent.height-4
+                            color: apps.fontColor
+                            anchors.right: parent.right
+                            anchors.rightMargin: 2
+                            anchors.verticalCenter: parent.verticalCenter
+                            MouseArea{
+                                anchors.fill: parent
+                                onClicked: delHistorial(dato)
+                            }
+                            Text{
+                                text: "X"
+                                font.pixelSize: parent.width
+                                color: apps.backgroundColor
+                                anchors.centerIn: parent
                             }
                         }
                         Text{
@@ -226,8 +269,13 @@ Window {
                         let files=unikObj.getFileList(folderQml, '*.*')
                         msg+='\nArchivos: '+files.toString()
                         let mainFile=folderQml+'/main.qml'
+                        console.log('mainFile: '+mainFile)
+                        //unikObj.cd(folderQml)
+                        unikObj.addImportPath(folderQml+'/modules')
                         engine.load(mainFile)
-                        apps.uIdApp=tiAppId.text
+                        if(tiAppId.text!=='0' && app.isRunikStart){
+                            apps.uIdApp=tiAppId.text
+                        }
                         app.close()
                         console.log(msg)
                         statusText.text=msg
@@ -379,6 +427,27 @@ Window {
         unikObj.setFile(fp, s)
         console.log('Se guarda historial: '+fp)
     }
+    function delHistorial(dato){
+        let s=''
+        let fp=unikObj.getPath(4)+'/historial.txt'
+        let fd=''//unikObj.getFile(fp)
+        if(unikObj.fileExist(fp)){
+            fd=unikObj.getFile(fp)
+        }else{
+            fd=''
+        }
+        let lines=fd.split('\n')
+        for(var i=0;i<lines.length;i++){
+            //console.log('l: ['+lines[i]+']')
+            //console.log('dato: ['+dato+']')
+            if(lines[i]!==dato && lines[i]!==''){
+                s+=lines[i]+'\n'
+            }
+        }
+        unikObj.setFile(fp, s)
+        console.log('Se eliminó la url: '+dato+' Archvivo: '+fp+':\nContenido:\n '+unikObj.getFile(fp))
+        getHistorial()
+    }
     function getHistorial(){
         let cant=0
         let fp=unikObj.getPath(4)+'/historial.txt'
@@ -386,6 +455,7 @@ Window {
         if(fd==='error'){
             return
         }
+        lm.clear()
         let lines=fd.split('\n')
         for(var i=0;i<lines.length;i++){
             if(lines[i]!=='\n'&&lines[i].length>1){
