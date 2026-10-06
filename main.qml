@@ -273,7 +273,7 @@ Window {
                         unikObj.cd(folderQml)
                         //unikObj.mkdir(folderQml+'/modules')
                         if(unikObj.folderExist(folderQml+'/modules')){
-                            unikObj.addImportPath(folderQml+'/modules')
+                            engine.addImportPath(folderQml+'/modules')
                         }
                         engine.load(mainFile)
                         if(tiAppId.text!=='0' && app.isRunikStart){
