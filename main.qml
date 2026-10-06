@@ -29,7 +29,7 @@ Window {
     color: apps.backgroundColor
     property int fs: width*0.035
     property var uAppsList: []
-    property bool isRunikStart: false
+    property bool isRunikStart: true
     Settings{
         id: apps
         property color backgroundColor: 'black'
@@ -270,9 +270,11 @@ Window {
                         msg+='\nArchivos: '+files.toString()
                         let mainFile=folderQml+'/main.qml'
                         console.log('mainFile: '+mainFile)
-                        //unikObj.cd(folderQml)
-                        unikObj.mkdir(folderQml+'/modules')
-                        unikObj.addImportPath(folderQml+'/modules')
+                        unikObj.cd(folderQml)
+                        //unikObj.mkdir(folderQml+'/modules')
+                        if(unikObj.folderExist(folderQml+'/modules')){
+                            unikObj.addImportPath(folderQml+'/modules')
+                        }
                         engine.load(mainFile)
                         if(tiAppId.text!=='0' && app.isRunikStart){
                             apps.uIdApp=tiAppId.text
@@ -296,8 +298,8 @@ Window {
 
     }
     Component.onCompleted: {
-        console.log('Ejecutando en: '+unikObj.currentFolderName())
-        app.isRunikStart=unikObj.currentFolderName().indexOf('runik-start')>=0
+        //console.log('Ejecutando en: '+unikObj.currentFolderName()
+        //app.isRunikStart=unikObj.currentFolderName().indexOf('runik-start')>=0
         if(Qt.application.arguments.toString().indexOf('-folder')>=0){
             let folder=''
             for(var i=0;i<Qt.application.arguments.length;i++){
