@@ -48,8 +48,9 @@ Window {
             anchors.centerIn: parent
             Text{
                 text: app.title
-                font.pixelSize: app.fs
+                font.pixelSize: app.fs*3
                 color: apps.fontColor
+                anchors.horizontalCenter: parent.horizontalCenter
             }
             Item{width: 1; height: app.fs*3}
             Text{
@@ -57,6 +58,7 @@ Window {
                 text: "Ingresar nombre, url o código de la aplicación:"
                 font.pixelSize: app.fs
                 color: apps.fontColor
+                anchors.left: tiAppId.left
             }
             TextInput{
                 id: tiAppId
@@ -65,6 +67,7 @@ Window {
                 height: app.fs*1.2
                 font.pixelSize: app.fs
                 color: apps.fontColor
+                anchors.horizontalCenter: parent.horizontalCenter
                 Rectangle{
                     width: parent.width+app.fs*0.5
                     height: parent.height+app.fs*0.5
@@ -124,7 +127,9 @@ Window {
                     id: btnActualizar
                     text: "Actualizar"
                     font.pixelSize: app.fs
-                    onClicked: {
+                    onClicked: run()
+                    function run(){
+                        console.log('btnActualizar.run()...')
                         let urlZipFile
                         if(tiAppId.text.indexOf('https:')===0){
                             let url=tiAppId.text
@@ -423,7 +428,7 @@ Window {
                 app.uAppsList=data.split('\n')
                 if(!app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0){
                     console.log('Actualizando Runik-Start: ['+tiAppId.text+']')
-                    btnActualizar.clicked()
+                    btnActualizar.run()
                 }
             } else {
                 statusText.text = data; // Muestra el mensaje de error
