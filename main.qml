@@ -29,7 +29,7 @@ Window {
     color: apps.backgroundColor
     property int fs: width*0.035
     property var uAppsList: []
-    property bool isRunikStart: false
+    property bool isRunikStart: true
     Settings{
         id: apps
         property color backgroundColor: 'black'
@@ -372,7 +372,7 @@ Window {
         let currentUrl = Qt.resolvedUrl("").toString();
 
         // Extraemos únicamente el nombre del archivo al final de la URL
-        let fileName = currentUrl.substring(currentUrl.lastIndexOf("/") + 1);
+        /*let fileName = currentUrl.substring(currentUrl.lastIndexOf("/") + 1);
 
         console.log("Nombre del archivo actual:", fileName);
 
@@ -382,7 +382,7 @@ Window {
         } else if (fileName === "main.qml") {
             console.log("El archivo está en minúsculas.");
             app.isRunikStart=true
-        }
+        }*/
         //console.log('Ejecutando en: '+unikObj.currentFolderName()
         //app.isRunikStart=unikObj.currentFolderName().indexOf('runik-start')>=0
         if(Qt.application.arguments.toString().indexOf('-folder')>=0){
