@@ -64,7 +64,7 @@ Window {
             TextInput{
                 id: tiAppId
                 text: apps.uIdApp//'https://github.com/nextsigner/semitimes-m1'
-                width: app.width-app.fs
+                width: xApp.width-app.fs*4
                 height: app.fs*1.2
                 font.pixelSize: app.fs
                 color: apps.fontColor
@@ -90,11 +90,10 @@ Window {
                 }
                 Button{
                     id: btnCargar
-                    text: "Cargar"
+                    text: 'Cargar'
                     font.pixelSize: app.fs
                     onClicked: {
                         let url=tiAppId.text
-                        urlZipFile=getGitHubZipUrl(url)
                         let m0=url.split('/')
                         let pn=m0[m0.length-1]
                         unikObj.cProject=pn
@@ -109,7 +108,7 @@ Window {
                         let mainFile=folderQml+'/main.qml'
                         if(unikObj.folderExist(folderQml) && unikObj.fileExist(folderQml+'/main.qml')){
                             if(unikObj.folderExist(folderQml+'/modules')){
-                                engine.addImportPath(folderQml+'/modules')
+                                unik.addImportPath(folderQml+'/modules')
                             }
                             engine.load(mainFile)
                             if(tiAppId.text!=='0' && app.isRunikStart){
@@ -349,7 +348,7 @@ Window {
                     msg="Error al descargar el archivo ZIP."
                     if(unikObj.folderExist(folderQml) && unikObj.fileExist(folderQml+'/main.qml')){
                         if(unikObj.folderExist(folderQml+'/modules')){
-                            engine.addImportPath(folderQml+'/modules')
+                            unik.addImportPath(folderQml+'/modules')
                         }
                         engine.load(mainFile)
                         if(tiAppId.text!=='0' && app.isRunikStart){
