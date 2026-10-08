@@ -29,7 +29,7 @@ Window {
     color: apps.backgroundColor
     property int fs: width*0.035
     property var uAppsList: []
-    property bool isRunikStart: true
+    property bool isRunikStart: false
     Settings{
         id: apps
         property color backgroundColor: 'black'
@@ -131,8 +131,11 @@ Window {
                     function run(){
                         console.log('btnActualizar.run()...')
                         let urlZipFile
-                        if(tiAppId.text.indexOf('https:')===0){
+                        if(tiAppId.text.indexOf('https:')===0 || tiAppId.text==='0'){
                             let url=tiAppId.text
+                            if(tiAppId.text==='0'){
+                                url="https://github.com/nextsigner/runik-start"
+                            }
                             urlZipFile=getGitHubZipUrl(url)
                             let m0=url.split('/')
                             let pn=m0[m0.length-1]
@@ -188,7 +191,7 @@ Window {
             Text{
                 id: statusText
                 text: ""
-                width: app.width-app.fs
+                width: xApp.width-app.fs
                 wrapMode: Text.WordWrap
                 font.pixelSize: app.fs
                 color: apps.fontColor
@@ -326,7 +329,8 @@ Window {
                         unikObj.cd(folderQml)
                         //unikObj.mkdir(folderQml+'/modules')
                         if(unikObj.folderExist(folderQml+'/modules')){
-                            engine.addImportPath(folderQml+'/modules')
+                            //engine.addImportPath(folderQml+'/modules')
+                            unik.addImportPath(folderQml+'/modules')
                         }
                         engine.load(mainFile)
                         if(tiAppId.text!=='0' && app.isRunikStart){
@@ -364,6 +368,20 @@ Window {
 
     }
     Component.onCompleted: {
+        let currentUrl = Qt.resolvedUrl("").toString();
+
+        // Extraemos únicamente el nombre del archivo al final de la URL
+        let fileName = currentUrl.substring(currentUrl.lastIndexOf("/") + 1);
+
+        console.log("Nombre del archivo actual:", fileName);
+
+        if (fileName === "Main.qml") {
+            console.log("El archivo se llama exactamente con la 'M' en mayúscula.");
+            app.isRunikStart=false
+        } else if (fileName === "main.qml") {
+            console.log("El archivo está en minúsculas.");
+            app.isRunikStart=true
+        }
         //console.log('Ejecutando en: '+unikObj.currentFolderName()
         //app.isRunikStart=unikObj.currentFolderName().indexOf('runik-start')>=0
         if(Qt.application.arguments.toString().indexOf('-folder')>=0){
@@ -545,3 +563,5 @@ Window {
 
     }
 }
+
+
