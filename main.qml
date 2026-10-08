@@ -45,6 +45,7 @@ Window {
         anchors.centerIn: parent
         Column{
             spacing: app.fs*0.5
+            width: xApp.width*0.5
             anchors.centerIn: parent
             Text{
                 text: app.title
@@ -444,7 +445,7 @@ Window {
                 statusText.text = "Lista de aplicaciones descargada con éxito.";
                 statusText.text+='\n'+data
                 app.uAppsList=data.split('\n')
-                if(!app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0){
+                if(!app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0 && tiAppId.text!=='https://github.com/nextsigner/runik-start'){
                     console.log('Actualizando Runik-Start: ['+tiAppId.text+']')
                     btnActualizar.run()
                 }
