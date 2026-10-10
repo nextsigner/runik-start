@@ -35,6 +35,17 @@ Window {
         property color backgroundColor: 'black'
         property color fontColor: 'white'
         property string uIdApp: ''
+        property bool autoUpdateRunikGUI: true
+    }
+    Connections{
+        target: qmlErrorLogger
+        onMessagesChanged:{
+            //if(Qt.platform.os==='linux' && app.enableQmlErrorLog && apps.dev && ap){
+                //app.flags=Qt.Window
+                //app.visibility="Maximized"
+                log.text+=''+qmlErrorLogger.messages[qmlErrorLogger.messages.length-1]+'<br>'
+            //}
+        }
     }
     Rectangle{
         id: xApp
@@ -43,6 +54,10 @@ Window {
         width: parent.width-app.fs*4
         height: parent.height-app.fs*6
         anchors.centerIn: parent
+        MouseArea{
+            anchors.fill: parent
+            onDoubleClicked: app.isRunikStart=!app.isRunikStart
+        }
         Column{
             spacing: app.fs*0.5
             width: xApp.width*0.5
@@ -76,6 +91,21 @@ Window {
                     border.width: 1
                     border.color: apps.fontColor
                     anchors.centerIn: parent
+                }
+            }
+            Row{
+                spacing: app.fs
+                visible: !app.isRunikStart
+                Text{
+                    text: 'Auto actualizar Runik:'
+                    color: apps.fontColor
+                    font.pixelSize: app.fs
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                CheckBox{
+                    checked: apps.autoUpdateRunikGUI
+                    onCheckedChanged: apps.autoUpdateRunikGUI=checked
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
             Row{
@@ -367,6 +397,28 @@ Window {
 
 
     }
+    Rectangle{
+        id: xLog
+        color: apps.backgroundColor
+        anchors.fill: parent
+        visible: false
+        Flickable{
+            width: parent.width
+            height: parent.height
+            contentWidth: width
+            contentHeight: log.contentHeight
+            Text{
+                id: log
+                width: xLog.width-app.fs
+                color: apps.fontColor
+                wrapMode: Text.WordWrap
+                textFormat: Text.RichText
+                onTextChanged: {
+                    if(text!=='')xLog.visible=true
+                }
+            }
+        }
+    }
     Component.onCompleted: {
         let currentUrl = Qt.resolvedUrl("").toString();
 
@@ -403,7 +455,7 @@ Window {
                 statusText.text="El archivo "+mainPath+' no existe!'
             }
         }
-        if(!app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0){
+        if(apps.autoUpdateRunikGUI && !app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0){
             tiAppId.text="0"
         }else{
             tiAppId.text=apps.uIdApp
@@ -412,6 +464,8 @@ Window {
         }
         getAppsList()
 
+        //let c='import QtQuickff'
+        //let obj=Qt.createQmlObject(c, xApp, 'pruebaErrorQml-code')
     }
 
     /*Component.onCompleted: {
@@ -428,7 +482,13 @@ Window {
 
     Shortcut{
         sequence: 'Esc'
-        onActivated: Qt.quit()
+        onActivated: {
+            if(xLog.visible){
+                xLog.visible=false
+                return
+            }
+            Qt.quit()
+        }
     }
 
     function getAppsList(){
