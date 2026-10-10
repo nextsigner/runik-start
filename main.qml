@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+//import Qt.labs.settings
 import QtCore
 import unik.Unik 1.0
 import QtMultimedia
@@ -32,10 +33,12 @@ Window {
     property bool isRunikStart: true
     Settings{
         id: apps
+        //fileName: unikObj.getPath(4)+'/runik.cfg'
         property color backgroundColor: 'black'
         property color fontColor: 'white'
         property string uIdApp: ''
         property bool autoUpdateRunikGUI: true
+        property bool autoLoad: true
     }
     Connections{
         target: qmlErrorLogger
@@ -105,6 +108,21 @@ Window {
                 CheckBox{
                     checked: apps.autoUpdateRunikGUI
                     onCheckedChanged: apps.autoUpdateRunikGUI=checked
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+            Row{
+                spacing: app.fs
+                visible: !app.isRunikStart
+                Text{
+                    text: 'Auto cargar ultima app:'
+                    color: apps.fontColor
+                    font.pixelSize: app.fs
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                CheckBox{
+                    checked: apps.autoLoad
+                    onCheckedChanged: apps.autoLoad=checked
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
@@ -455,12 +473,14 @@ Window {
                 statusText.text="El archivo "+mainPath+' no existe!'
             }
         }
-        if(apps.autoUpdateRunikGUI && !app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0){
+        if(!apps.autoLoad && apps.autoUpdateRunikGUI && !app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0){
             tiAppId.text="0"
         }else{
-            tiAppId.text=apps.uIdApp
-            tiAppId.focus=true
-            tiAppId.selectAll()
+            if(apps.autoLoad){
+                tiAppId.text=apps.uIdApp
+                tiAppId.focus=true
+                tiAppId.selectAll()
+            }
         }
         getAppsList()
 
@@ -506,7 +526,9 @@ Window {
                 app.uAppsList=data.split('\n')
                 if(!app.isRunikStart && Qt.application.arguments.indexOf('-dev')<0 && tiAppId.text!=='https://github.com/nextsigner/runik-start'){
                     console.log('Actualizando Runik-Start: ['+tiAppId.text+']')
-                    btnActualizar.run()
+                    if(apps.autoLoad){
+                        btnActualizar.run()
+                    }
                 }
             } else {
                 statusText.text = data; // Muestra el mensaje de error
