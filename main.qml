@@ -109,6 +109,12 @@ Window {
                     checked: apps.autoUpdateRunikGUI
                     onCheckedChanged: apps.autoUpdateRunikGUI=checked
                     anchors.verticalCenter: parent.verticalCenter
+                    Rectangle{
+                        color: 'transparent'
+                        border.width: 1
+                        border.color: 'white'
+                        anchors.fill: parent
+                    }
                 }
             }
             Row{
@@ -124,6 +130,12 @@ Window {
                     checked: apps.autoLoad
                     onCheckedChanged: apps.autoLoad=checked
                     anchors.verticalCenter: parent.verticalCenter
+                    Rectangle{
+                        color: 'transparent'
+                        border.width: 1
+                        border.color: 'white'
+                        anchors.fill: parent
+                    }
                 }
             }
             Row{
@@ -437,7 +449,16 @@ Window {
             }
         }
     }
+    // Timer{
+    //     running: true
+    //     repeat: true
+    //     interval: 5000
+    //     onTriggered: unik.speak('Hola. Aplicación runik iniciada.')
+    // }
     Component.onCompleted: {
+        //apps.autoLoad=false
+
+
         let currentUrl = Qt.resolvedUrl("").toString();
 
         // Extraemos únicamente el nombre del archivo al final de la URL
