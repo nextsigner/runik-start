@@ -30,7 +30,7 @@ Window {
     color: apps.backgroundColor
     property int fs: width*0.035
     property var uAppsList: []
-    property bool isRunikStart: true
+    property bool isRunikStart: false
     Settings{
         id: apps
         //fileName: unikObj.getPath(4)+'/runik.cfg'
@@ -201,7 +201,11 @@ Window {
                             let pn=m0[m0.length-1]
                             unikObj.cProject=pn
                             setHistorial(tiAppId.text)
-                            unikObj.downloadGitHubZip(urlZipFile, pn+"_main.zip");
+                            unikObj.uUrl=url
+                            let descargado=unikObj.downloadGitHubZip(urlZipFile, pn+"_main.zip");
+                            if(descargado){
+                                apps.uIdApp=url
+                            }
                         }else{
                             for(var i=0;i<app.uAppsList.length;i++){
                                 let linea=app.uAppsList[i]
@@ -212,8 +216,11 @@ Window {
                                         urlZipFile=getGitHubZipUrl(args[2])
                                         statusText.text='Descargando '+urlZipFile
                                         setHistorial(tiAppId.text)
-                                        unikObj.downloadGitHubZip(urlZipFile, args[1]+"_main.zip");
-
+                                        unikObj.uUrl=url
+                                        let descargado = unikObj.downloadGitHubZip(urlZipFile, args[1]+"_main.zip");
+                                        if(descargado){
+                                            apps.uIdApp=url
+                                        }
                                     }
                                 }
                             }
@@ -349,6 +356,7 @@ Window {
         Unik {
             id: unikObj
             property string cProject: ''
+            property string uUrl: ''
 
             onDownloadProgress: function(bytesReceived, bytesTotal) {
                 let msg=""
@@ -365,6 +373,7 @@ Window {
                 }
             }
             onDownloadFinished: function(success, filePath) {
+                apps.uIdApp=unikObj.uUrl
                 let msg=""
                 let folder=''
                 if(Qt.platform.os==='android'){
