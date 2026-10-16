@@ -1,1 +1,1 @@
-Se agrega let descargado
+i7: Se optimiza el boton cargar 2

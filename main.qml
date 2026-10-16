@@ -28,6 +28,7 @@ Window {
     visible: true
     title: !isRunikStart?"Runik":"Runik!"
     color: apps.backgroundColor
+    property bool dev: false
     property int fs: width*0.035
     property var uAppsList: []
     property bool isRunikStart: true
@@ -142,13 +143,6 @@ Window {
                 spacing: app.fs*0.5
                 anchors.horizontalCenter: parent.horizontalCenter
                 Button{
-                    text: "Historial"
-                    font.pixelSize: app.fs
-                    onClicked: {
-                        getHistorial()
-                    }
-                }
-                Button{
                     id: btnCargar
                     text: 'Cargar'
                     font.pixelSize: app.fs
@@ -164,7 +158,18 @@ Window {
                         }else{
                             folder=unikObj.getPath(4)+'/runik'
                         }
+
+                        /*
+                        let folder='???'
+                        let url='???'
+                        let m0
+                        */
+
                         let folderQml=folder+'/'+unikObj.cProject+'-main'
+                        if(tiAppId.text.indexOf('https')===0){
+                            m0=tiAppId.text.split('/')
+                            folder=unikObj.getPath(3)+'/runik/'+m0[m0.length-1]+'-main'
+                        }
                         let mainFile=folderQml+'/main.qml'
                         if(unikObj.folderExist(folderQml) && unikObj.fileExist(folderQml+'/main.qml')){
                             if(unikObj.folderExist(folderQml+'/modules')){
@@ -216,7 +221,7 @@ Window {
                                         urlZipFile=getGitHubZipUrl(args[2])
                                         statusText.text='Descargando '+urlZipFile
                                         setHistorial(tiAppId.text)
-                                        unikObj.uUrl=url
+                                        unikObj.uUrl=args[2]
                                         let descargado = unikObj.downloadGitHubZip(urlZipFile, args[1]+"_main.zip");
                                         if(descargado){
                                             apps.uIdApp=url
@@ -228,6 +233,51 @@ Window {
                     }
                 }
             }
+            Row{
+                spacing: app.fs*0.5
+                anchors.horizontalCenter: parent.horizontalCenter
+                Button{
+                    text: "Historial"
+                    font.pixelSize: app.fs
+                    onClicked: {
+                        getHistorial()
+                    }
+                }
+                Button{
+                    text: "Eliminar Cache"
+                    font.pixelSize: app.fs
+                    onClicked: {
+                        let folder='???'
+                        let url='???'
+                        let m0
+                        if(tiAppId.text.indexOf('https')===0){
+                            m0=tiAppId.text.split('/')
+                            folder=unikObj.getPath(3)+'/runik/'+m0[m0.length-1]+'-main'
+                        }
+                        log.text+='Existe carpeta: '+(unikObj.folderExist(folder)?'SI':'NO')+'<br>'
+                        log.text+='Eliminando carpeta: '+folder+'<br>'
+                        let archivos=unikObj.getFileList(folder, '*')
+                        log.text+='Archivos pre existentes: '+(''+archivos).split(',').join('<br>')
+                        log.text+='<br>Carpeta eliminada: '+(unikObj.deleteFolder(folder)?'SI':'NO')+'<br>'
+                        log.text+='Archivos existentes: '+unikObj.getFileList(folder, '*')
+                    }
+                }
+            }
+            Row{
+                spacing: app.fs*0.5
+                anchors.horizontalCenter: parent.horizontalCenter
+                Button{
+                    text: "Modo Desarrollador"
+                    font.pixelSize: app.fs
+                    onClicked: {
+                        app.dev=!app.dev
+                        //unikObj.restart(["-dev"], unikObj.currentFolderPath())
+                        //unikObj.restartApp()
+                    }
+                }
+
+            }
+
             ProgressBar {
                 id: progressBar
                 width: app.width-app.fs
@@ -235,6 +285,7 @@ Window {
                 from: 0
                 to: 1
                 value: 0
+                visible: value>0
                 Rectangle{
                     color: 'transparent'
                     border.width: 2
@@ -439,8 +490,12 @@ Window {
     Rectangle{
         id: xLog
         color: apps.backgroundColor
-        anchors.fill: parent
+        //anchors.fill: parent
+        width: parent.width-app.fs*4
+        height: parent.height-app.fs*6
+        anchors.centerIn: parent
         visible: false
+        onVisibleChanged: log.text=''
         Flickable{
             width: parent.width
             height: parent.height
@@ -456,6 +511,13 @@ Window {
                     if(text!=='')xLog.visible=true
                 }
             }
+        }
+        Button{
+            text: 'Cerrar'
+            onClicked: xLog.visible=false
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: app.fs*4
         }
     }
     // Timer{
