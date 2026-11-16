@@ -306,11 +306,11 @@ Window {
                         let pathIcon1=unikObj.getPath(3)+'/runik/'+idSubApp+'-main/logo.png'
                         l('Copiando archivo '+pathIcon1)
                         l('Existe:'+unikObj.fileExist(pathIcon1))
-                        let pathIcon2=unikObj.getPath(4)+'/logo.png'
+                        let pathIcon2=unikObj.getPath(4)+'/logo_'+idSubApp+'.png'
                         let iconoCopiado=unikObj.cpFile(pathIcon1, pathIcon2)
                         if(iconoCopiado){
                             //iconApp.source='file://'+pathIcon2
-                            //l('Icono copiado!\n'+pathIcon2)
+                            l('Icono copiado!\n'+pathIcon2)
                             //console.log('Icono copiado!\n'+pathIcon2)
                         }
                         let iconPath
