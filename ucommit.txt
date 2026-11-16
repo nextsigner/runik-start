@@ -1,1 +1,1 @@
-i7: Se optimiza el boton cargar 2
+i7: Se crea version y logo.png

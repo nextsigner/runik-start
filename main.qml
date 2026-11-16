@@ -45,12 +45,17 @@ Window {
         target: qmlErrorLogger
         onMessagesChanged:{
             //if(Qt.platform.os==='linux' && app.enableQmlErrorLog && apps.dev && ap){
-                //app.flags=Qt.Window
-                //app.visibility="Maximized"
-                log.text+=''+qmlErrorLogger.messages[qmlErrorLogger.messages.length-1]+'<br>'
+            //app.flags=Qt.Window
+            //app.visibility="Maximized"
+            let msg=qmlErrorLogger.messages[qmlErrorLogger.messages.length-1]
+            if(msg.indexOf('Failed to start frame')<0){
+                l(msg)
+            }
+
             //}
         }
     }
+
     Rectangle{
         id: xApp
         color: 'transparent'
@@ -59,14 +64,34 @@ Window {
         height: parent.height-app.fs*6
         anchors.centerIn: parent
         MouseArea{
+            id: maFondo
             anchors.fill: parent
+            property int v: 0
+            onClicked: {
+                if(maFondo.v>=3){
+                    app.dev=true
+                    maFondo.v=0
+                    return
+                }
+                app.dev=false
+                maFondo.v++
+
+            }
             onDoubleClicked: app.isRunikStart=!app.isRunikStart
         }
         Column{
             spacing: app.fs*0.5
             width: xApp.width*0.5
             anchors.centerIn: parent
+            Image{
+                id: iconApp
+                width: app.fs*6
+                height: width
+                //source: 'assets:/imgs/logo.png'
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
             Text{
+                id: tit
                 text: app.title
                 font.pixelSize: app.fs*3
                 color: apps.fontColor
@@ -175,6 +200,7 @@ Window {
                             if(unikObj.folderExist(folderQml+'/modules')){
                                 unik.addImportPath(folderQml+'/modules')
                             }
+                            unikObj.cd(folderQml)
                             engine.load(mainFile)
                             if(tiAppId.text!=='0' && app.isRunikStart){
                                 apps.uIdApp=tiAppId.text
@@ -254,12 +280,12 @@ Window {
                             m0=tiAppId.text.split('/')
                             folder=unikObj.getPath(3)+'/runik/'+m0[m0.length-1]+'-main'
                         }
-                        log.text+='Existe carpeta: '+(unikObj.folderExist(folder)?'SI':'NO')+'<br>'
-                        log.text+='Eliminando carpeta: '+folder+'<br>'
+                        l('Existe carpeta: '+(unikObj.folderExist(folder)?'SI':'NO'))
+                        l('Eliminando carpeta: '+folder)
                         let archivos=unikObj.getFileList(folder, '*')
-                        log.text+='Archivos pre existentes: '+(''+archivos).split(',').join('<br>')
-                        log.text+='<br>Carpeta eliminada: '+(unikObj.deleteFolder(folder)?'SI':'NO')+'<br>'
-                        log.text+='Archivos existentes: '+unikObj.getFileList(folder, '*')
+                        l('Archivos pre existentes: '+(''+archivos).split(',').join('\n'))
+                        l('Carpeta eliminada: '+(unikObj.deleteFolder(folder)?'SI':'NO'))
+                        l('Archivos existentes: '+unikObj.getFileList(folder, '*'))
                     }
                 }
             }
@@ -267,6 +293,40 @@ Window {
                 spacing: app.fs*0.5
                 anchors.horizontalCenter: parent.horizontalCenter
                 Button{
+                    text: "Crear Icono"
+                    font.pixelSize: app.fs
+                    onClicked: {
+                        if(tiAppId.text===''){
+                            l('No se ha creado el ícono porque no hay ningúna app en el campo de texto.')
+                            return
+                        }
+                        let m0=tiAppId.text.split('/')
+                        let idSubApp=''+m0[m0.length-1]
+
+                        let pathIcon1=unikObj.getPath(3)+'/runik/'+idSubApp+'-main/logo.png'
+                        let pathIcon2=unikObj.getPath(4)+'/logo.png'
+                        let iconoCopiado=unikObj.cpFile(pathIcon1, pathIcon2)
+                        if(iconoCopiado){
+                            //iconApp.source='file://'+pathIcon2
+                            //l('Icono copiado!\n'+pathIcon2)
+                            //console.log('Icono copiado!\n'+pathIcon2)
+                        }
+                        let iconPath
+                        if(unikObj.fileExist(pathIcon2)){
+                            iconPath=pathIcon2
+                        }else{
+                            iconPath=unikObj.getPath(3)+'/runik/logo.png'
+                        }
+
+
+                        let idIcon='runik_'+idSubApp
+                        let label=idSubApp
+                        let label2 = label.charAt(0).toUpperCase() + label.slice(1);
+                        let params='folder='+unikObj.getPath(3)+'/runik/'+label+'-main'
+                        unikObj.createRunikDesktopShortcut(idIcon, label2, params, iconPath)
+                    }
+                }
+                /*Button{
                     text: "Modo Desarrollador"
                     font.pixelSize: app.fs
                     onClicked: {
@@ -274,8 +334,19 @@ Window {
                         //unikObj.restart(["-dev"], unikObj.currentFolderPath())
                         //unikObj.restartApp()
                     }
-                }
+                }*/
 
+            }
+
+            Row{
+                spacing: app.fs
+                visible: app.dev
+                Button{
+                    text: 'Probar Log'
+                    onClicked: {
+                        l('Probando')
+                    }
+                }
             }
 
             ProgressBar {
@@ -322,13 +393,16 @@ Window {
             color: apps.backgroundColor
             border.width: 2
             border.color: apps.fontColor
-            anchors.fill: parent
+            //anchors.fill: parent
+            width: xApp.width-app.fs
+            height: xApp.height-app.fs*4
+            anchors.centerIn: parent
             visible: false
             ListView{
                 id: lv
                 spacing: app.fs
                 width: parent.width
-                height: parent.height*0.9
+                height: parent.height//*0.9
                 //anchors.centerIn: parent
                 model: lm
                 delegate: compLv
@@ -343,6 +417,14 @@ Window {
                         }
                     }
                 }
+                Button{
+                    text: 'Cerrar'
+                    anchors.right: parent.right
+                    anchors.rightMargin: app.fs*0.5
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: app.fs
+                    onClicked: xHistorial.visible=false
+                }
                 Component{
                     id: compLv
                     Rectangle{
@@ -353,7 +435,7 @@ Window {
                         border.width: 1
                         border.color: apps.fontColor
                         radius: app.fs*0.25
-                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.horizontalCenter: parent?parent.horizontalCenter:undefined
                         clip: true
                         MouseArea{
                             anchors.fill: parent
@@ -371,7 +453,9 @@ Window {
                             anchors.rightMargin: 2
                             anchors.verticalCenter: parent.verticalCenter
                             MouseArea{
-                                anchors.fill: parent
+                                width: parent.width*1.5
+                                height: parent.height+lv.spacing
+                                anchors.verticalCenter: parent.verticalCenter
                                 onClicked: delHistorial(dato)
                             }
                             Text{
@@ -495,29 +579,37 @@ Window {
         height: parent.height-app.fs*6
         anchors.centerIn: parent
         visible: false
-        onVisibleChanged: log.text=''
+        onVisibleChanged: {
+            if(!xLog.visible){
+                log.text=''
+            }
+        }
         Flickable{
             width: parent.width
             height: parent.height
             contentWidth: width
             contentHeight: log.contentHeight
+            anchors.top: parent.top
             Text{
                 id: log
                 width: xLog.width-app.fs
                 color: apps.fontColor
                 wrapMode: Text.WordWrap
-                textFormat: Text.RichText
+                font.pixelSize: app.fs*1.5
                 onTextChanged: {
-                    if(text!=='')xLog.visible=true
+                    //if(text!=='')xLog.visible=true
                 }
             }
         }
-        Button{
-            text: 'Cerrar'
-            onClicked: xLog.visible=false
+        Row{
+            spacing: app.fs
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.bottomMargin: app.fs*4
+            Button{
+                text: 'Cerrar'
+                onClicked: xLog.visible=false
+            }
         }
     }
     // Timer{
@@ -526,7 +618,68 @@ Window {
     //     interval: 5000
     //     onTriggered: unik.speak('Hola. Aplicación runik iniciada.')
     // }
+    /*Timer {
+        id: shortcutTimer
+        interval: 5000
+        repeat: false
+        onTriggered: {
+            //unikObj.createRunikShortcut('runik1', 'ShortCut1', 'param1=2')
+            //unikObj.createRunikDesktopShortcut('runik1', 'runik111', 'param2=3')
+            //console.log("Acceso directo solicitado desde QML de forma segura.")
+        }
+    }*/
     Component.onCompleted: {
+        let version=1
+        let nVersionRunikStart=version
+        let versionFp=unikObj.getPath(3)+'/runik/runik-start/version'
+        if(unikObj.fileExist(versionFp)){
+            nVersionRunikStart=parseInt(unik.getFile(versionFp).replace(/\n/g, ''))
+        }
+        if(version>nVersionRunikStart){
+            tiAppId.text="0"
+            btnActualizar.run()
+            return
+        }
+        if(!unikObj.fileExist(unikObj.getPath(3)+'/runik/logo.png')){
+            let iconoCopiado=unikObj.cpFile(unikObj.getPath(3)+'/runik-start/logo.png', unikObj.getPath(3)+'/runik/logo.png')
+        }
+
+        let folder
+        let mainPath
+
+        let param = unikObj.getRunikLaunchParameter();
+        if (param !== "") {
+            console.log(">>> La app se abrió desde un acceso directo con el parámetro:", param);
+
+            //tit.text='Parámetros:\n'+param
+            //tit.font.pixelSize=app.fs*0.5
+            let m00=param.split('|')
+            for(var i0=0; i0 < m00.length; i0++){
+                let arg=m00[i0]
+                if(arg.indexOf('folder=')>=0){
+                    let mArg=arg.split('folder=')
+                    folder=mArg=mArg[1]
+                    mainPath=folder+'/main.qml'
+                    unikObj.cd(folder)
+                    engine.load(mainPath)
+                    app.close()
+                }
+            }
+
+            //txtDato.visible=true
+            return
+        } else {
+            console.log(">>> La app se abrió de forma normal (sin parámetros de shortcut).");
+        }
+        let pathIcon1=unikObj.getPath(3)+'/runik/logo.png'
+        let pathIcon2=unikObj.getPath(4)+'/logo.png'
+        let iconoCopiado=unikObj.cpFile(pathIcon1, pathIcon2)
+        if(iconoCopiado){
+            iconApp.source='file://'+pathIcon2
+            //l('Icono copiado!\n'+pathIcon2)
+            console.log('Icono copiado!\n'+pathIcon2)
+        }
+
         //apps.autoLoad=false
 
 
@@ -547,7 +700,7 @@ Window {
         //console.log('Ejecutando en: '+unikObj.currentFolderName()
         //app.isRunikStart=unikObj.currentFolderName().indexOf('runik-start')>=0
         if(Qt.application.arguments.toString().indexOf('-folder')>=0){
-            let folder=''
+            folder=''
             for(var i=0;i<Qt.application.arguments.length;i++){
                 let arg=Qt.application.arguments[i]
                 if(arg.indexOf('-folder=')===0){
@@ -556,8 +709,9 @@ Window {
                     break
                 }
             }
-            let mainPath=folder+'/main.qml'
+            mainPath=folder+'/main.qml'
             if(unikObj.fileExist(mainPath)){
+                unikObj.cd(folder)
                 engine.load(mainPath)
                 app.close()
                 return
@@ -599,10 +753,19 @@ Window {
                 xLog.visible=false
                 return
             }
+            if(xHistorial.visible){
+                xHistorial.visible=false
+                return
+            }
             Qt.quit()
         }
     }
 
+
+    function l(t){
+        log.text+=t+'\n'
+        xLog.visible=true
+    }
     function getAppsList(){
         let d = new Date(Date.now())
         var targetUrl='https://raw.githubusercontent.com/nextsigner/nextsigner.github.io/main/runik/apps.txt?r='+d.getTime()
