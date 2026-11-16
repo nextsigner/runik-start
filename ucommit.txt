@@ -1,1 +1,1 @@
-Se elimina Main.qml
+Se optimiza. Prueba 1
