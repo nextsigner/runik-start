@@ -307,15 +307,15 @@ Window {
                         let idSubApp=''+m0[m0.length-1]
 
                         let pathIcon1=unikObj.getPath(3)+'/runik/'+idSubApp+'-main/logo.png'
-                        l('Copiando archivo '+pathIcon1)
-                        l('Existe: '+unikObj.fileExist(pathIcon1))
+                        if(app.dev)l('Copiando archivo '+pathIcon1)
+                        if(app.dev)l('Existe: '+unikObj.fileExist(pathIcon1))
                         let pathIcon2=unikObj.getPath(4)+'/logo_'+idSubApp+'.png'
-                        l('Copiando archivo destino: '+pathIcon2)
-                        l('Existe destino: '+unikObj.fileExist(pathIcon2))
+                        if(app.dev)l('Copiando archivo destino: '+pathIcon2)
+                        if(app.dev)l('Existe destino: '+unikObj.fileExist(pathIcon2))
                         let iconoCopiado=unikObj.cpFile(pathIcon1, pathIcon2)
                         if(iconoCopiado){
                             //iconApp.source='file://'+pathIcon2
-                            l('Icono copiado!\n'+pathIcon2)
+                            if(app.dev)l('Icono copiado!\n'+pathIcon2)
                             //console.log('Icono copiado!\n'+pathIcon2)
                         }
 
