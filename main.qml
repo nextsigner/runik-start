@@ -316,13 +316,22 @@ Window {
                             l('Icono copiado!\n'+pathIcon2)
                             //console.log('Icono copiado!\n'+pathIcon2)
                         }
+                        let c='import QtQuick\n'
+                        c+='Item{\n'
+                        c+='    Image{\n'
+                        c+='       width:300\n'
+                        c+='       height:300\n'
+                        c+='       source:"file://'+pathIcon2+'"\n'
+                        c+='    }\n'
+                        c+='}\n'
+                        let obj=Qt.createQmlObject(c, xLog, 'codigo1000')
                         let iconPath
                         if(unikObj.fileExist(pathIcon2)){
                             iconPath=pathIcon2
                         }else{
                             iconPath=unikObj.getPath(3)+'/runik/logo.png'
                         }
-
+                        l('Icono final: '+iconPath)
 
                         let idIcon='runik_'+idSubApp
                         let label=idSubApp
