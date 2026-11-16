@@ -301,6 +301,8 @@ Window {
                             l('No se ha creado el ícono porque no hay ningúna app en el campo de texto.')
                             return
                         }
+                        let dateMs = new Date(Date.now())
+                        let ms=dateMs.getTime()
                         let m0=tiAppId.text.split('/')
                         let idSubApp=''+m0[m0.length-1]
 
@@ -316,6 +318,8 @@ Window {
                             l('Icono copiado!\n'+pathIcon2)
                             //console.log('Icono copiado!\n'+pathIcon2)
                         }
+
+                        /*
                         let c='import QtQuick\n'
                         c+='Item{\n'
                         c+='    Image{\n'
@@ -325,6 +329,8 @@ Window {
                         c+='    }\n'
                         c+='}\n'
                         let obj=Qt.createQmlObject(c, xLog, 'codigo1000')
+                        */
+
                         let iconPath
                         if(unikObj.fileExist(pathIcon2)){
                             iconPath=pathIcon2
@@ -333,7 +339,7 @@ Window {
                         }
                         l('Icono final: '+iconPath)
 
-                        let idIcon='runik_'+idSubApp
+                        let idIcon='runik_'+idSubApp+'_'+ms
                         let label=idSubApp
                         let label2 = label.charAt(0).toUpperCase() + label.slice(1);
                         let params='folder='+unikObj.getPath(3)+'/runik/'+label+'-main'
