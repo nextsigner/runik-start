@@ -1,1 +1,1 @@
-Editando version. Prueba 1
+Se elimina Main.qml
