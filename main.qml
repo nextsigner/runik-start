@@ -28,6 +28,7 @@ Window {
     visible: true
     title: !isRunikStart?"Runik":"Runik!"
     color: apps.backgroundColor
+    property int version: 1
     property bool dev: false
     property int fs: width*0.035
     property var uAppsList: []
@@ -92,7 +93,7 @@ Window {
             }
             Text{
                 id: tit
-                text: app.title
+                text: app.title+' v'+app.version
                 font.pixelSize: app.fs*3
                 color: apps.fontColor
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -305,8 +306,10 @@ Window {
 
                         let pathIcon1=unikObj.getPath(3)+'/runik/'+idSubApp+'-main/logo.png'
                         l('Copiando archivo '+pathIcon1)
-                        l('Existe:'+unikObj.fileExist(pathIcon1))
+                        l('Existe: '+unikObj.fileExist(pathIcon1))
                         let pathIcon2=unikObj.getPath(4)+'/logo_'+idSubApp+'.png'
+                        l('Copiando archivo destino: '+pathIcon2)
+                        l('Existe destino: '+unikObj.fileExist(pathIcon2))
                         let iconoCopiado=unikObj.cpFile(pathIcon1, pathIcon2)
                         if(iconoCopiado){
                             //iconApp.source='file://'+pathIcon2
@@ -631,13 +634,13 @@ Window {
         }
     }*/
     Component.onCompleted: {
-        let version=1
-        let nVersionRunikStart=version
+        //let version=1
+        let nVersionRunikStart=app.version
         let versionFp=unikObj.getPath(3)+'/runik/runik-start/version'
         if(unikObj.fileExist(versionFp)){
             nVersionRunikStart=parseInt(unik.getFile(versionFp).replace(/\n/g, ''))
         }
-        if(version>nVersionRunikStart){
+        if(app.version>nVersionRunikStart){
             tiAppId.text="0"
             btnActualizar.run()
             return
