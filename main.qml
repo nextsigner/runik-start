@@ -404,6 +404,7 @@ Window {
                         for(var i=0;i<m0.length;i++){
                            s+=''+m0[i]+'\n'
                         }
+                        l('P: ['+app.uParams+']\n')
                         l(s)
                     }
                 }
