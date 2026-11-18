@@ -367,13 +367,14 @@ Window {
                     property string label2: ''
                     property string params: ''
                     onTriggered: {
-                        if(tMkIcon.v>=3){
+                        if(tMkIcon.v>=4){
                             let iconoCreado=unikObj.createRunikDesktopShortcut(tMkIcon.idIcon, tMkIcon.label2, tMkIcon.params, tMkIcon.iconPath)
                             if(iconoCreado){
                                 l('Ícono creado!')
                             }else{
                                 l('El icono no ha sido creado.')
                             }
+                            tMkIcon.stop()
                         }
                         tMkIcon.v++
                     }
@@ -543,7 +544,7 @@ Window {
         anchors.fill: xApp
         visible: tMkIcon.running
         Text{
-            text: 'Creando ícono en '+(parseInt(3-tMkIcon.v))
+            text: 'Creando ícono en '+(parseInt(3-tMkIcon.v-1))
             font.pixelSize: app.fs
             color: apps.fontColor
             anchors.centerIn: parent
