@@ -331,7 +331,7 @@ Window {
                         let obj=Qt.createQmlObject(c, xLog, 'codigo1000')
                         */
 
-                        tMkIcon.v=0
+                        tMkIcon.v=3
                         tMkIcon.iconPath=pathIcon2
                         tMkIcon.idIcon='runik_'+idSubApp+'_'+ms
                         tMkIcon.label=idSubApp
@@ -360,14 +360,14 @@ Window {
                     running: false
                     repeat: true
                     interval: 1000
-                    property int v: 0
+                    property int v: 3
                     property string iconPath: ''
                     property string idIcon: ''
                     property string label: ''
                     property string label2: ''
                     property string params: ''
                     onTriggered: {
-                        if(tMkIcon.v>=4){
+                        if(tMkIcon.v<=0){
                             let iconoCreado=unikObj.createRunikDesktopShortcut(tMkIcon.idIcon, tMkIcon.label2, tMkIcon.params, tMkIcon.iconPath)
                             if(iconoCreado){
                                 l('Ícono creado!')
@@ -376,7 +376,7 @@ Window {
                             }
                             tMkIcon.stop()
                         }
-                        tMkIcon.v++
+                        tMkIcon.v--
                     }
                 }
                 /*Button{
@@ -553,8 +553,8 @@ Window {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             Text{
-                text: ''+(parseInt(3-tMkIcon.v-1))
-                font.pixelSize: app.fs*3
+                text: ''+tMkIcon.v
+                font.pixelSize: app.fs*4
                 color: apps.fontColor
                 anchors.horizontalCenter: parent.horizontalCenter
             }
