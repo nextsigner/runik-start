@@ -331,6 +331,7 @@ Window {
                         let obj=Qt.createQmlObject(c, xLog, 'codigo1000')
                         */
 
+                        tMkIcon.v=0
                         tMkIcon.iconPath=pathIcon2
                         tMkIcon.idIcon='runik_'+idSubApp+'_'+ms
                         tMkIcon.label=idSubApp
@@ -358,19 +359,23 @@ Window {
                     id: tMkIcon
                     running: false
                     repeat: false
-                    interval: 3000
+                    interval: 1000
+                    property int v: 0
                     property string iconPath: ''
                     property string idIcon: ''
                     property string label: ''
                     property string label2: ''
                     property string params: ''
                     onTriggered: {
-                        let iconoCreado=unikObj.createRunikDesktopShortcut(tMkIcon.idIcon, tMkIcon.label2, tMkIcon.params, tMkIcon.iconPath)
-                        if(iconoCreado){
-                            l('Ícono creado!')
-                        }else{
-                            l('El icono no ha sido creado.')
+                        if(tMkIcon.v>=3){
+                            let iconoCreado=unikObj.createRunikDesktopShortcut(tMkIcon.idIcon, tMkIcon.label2, tMkIcon.params, tMkIcon.iconPath)
+                            if(iconoCreado){
+                                l('Ícono creado!')
+                            }else{
+                                l('El icono no ha sido creado.')
+                            }
                         }
+                        tMkIcon.v++
                     }
                 }
                 /*Button{
@@ -533,7 +538,17 @@ Window {
         }
     }
 
-
+    Rectangle{
+        color: apps.backgroundColor
+        anchors.fill: xApp
+        visible: tMkIcon.running
+        Text{
+            text: 'Creando ícono en '+(parseInt(3-tMkIcon.v))
+            font.pixelSize: app.fs
+            color: apps.fontColor
+            anchors.centerIn: parent
+        }
+    }
     Item {
         Unik {
             id: unikObj
