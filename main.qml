@@ -331,6 +331,14 @@ Window {
                         let obj=Qt.createQmlObject(c, xLog, 'codigo1000')
                         */
 
+                        tMkIcon.iconPath=pathIcon2
+                        tMkIcon.idIcon='runik_'+idSubApp+'_'+ms
+                        tMkIcon.label=idSubApp
+                        let label=idSubApp
+                        tMkIcon.label2 = label.charAt(0).toUpperCase() + label.slice(1);
+                        tMkIcon.params='folder='+unikObj.getPath(3)+'/runik/'+label+'-main'
+                        tMkIcon.start()
+                        return
                         let iconPath
                         if(unikObj.fileExist(pathIcon2)){
                             iconPath=pathIcon2
@@ -344,6 +352,25 @@ Window {
                         let label2 = label.charAt(0).toUpperCase() + label.slice(1);
                         let params='folder='+unikObj.getPath(3)+'/runik/'+label+'-main'
                         unikObj.createRunikDesktopShortcut(idIcon, label2, params, iconPath)
+                    }
+                    Timer{
+                        id: tMkIcon
+                        running: false
+                        repeat: false
+                        interval: 3000
+                        property string iconPath: ''
+                        property string idIcon: ''
+                        property string label: ''
+                        property string label2: ''
+                        property string params: ''
+                        onTriggered: {
+                            let iconoCreado=unikObj.createRunikDesktopShortcut(tMkIcon.idIcon, tMkIcon.label2, tMkIcon.params, tMkIcon.iconPath)
+                            if(iconoCreado){
+                                l('Ícono creado!')
+                            }else{
+                                l('El icono no ha sido creado.')
+                            }
+                        }
                     }
                 }
                 /*Button{
