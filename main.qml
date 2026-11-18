@@ -543,12 +543,23 @@ Window {
         color: apps.backgroundColor
         anchors.fill: xApp
         visible: tMkIcon.running
-        Text{
-            text: 'Creando ícono en '+(parseInt(3-tMkIcon.v-1))
-            font.pixelSize: app.fs
-            color: apps.fontColor
+        Column{
+            spacing: app.fs
             anchors.centerIn: parent
+            Text{
+                text: 'Creando ícono en'
+                font.pixelSize: app.fs*1.5
+                color: apps.fontColor
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            Text{
+                text: ''+(parseInt(3-tMkIcon.v-1))
+                font.pixelSize: app.fs*3
+                color: apps.fontColor
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
         }
+
     }
     Item {
         Unik {
