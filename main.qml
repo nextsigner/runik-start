@@ -396,9 +396,15 @@ Window {
                 spacing: app.fs
                 visible: app.dev
                 Button{
-                    text: 'Probar Log'
+                    text: 'Ver Parámetros'
                     onClicked: {
-                        l('Probando')
+                        let s='Lista de parámetros recibidos por Runik:\n'
+                        let m0=app.uParams.split('|')
+                        s+='Cantidad de parámetros: '+m0.length+'\n'
+                        for(var i=0;i<m0.length;i++){
+                           s+=''+m0[i]+'\n'
+                        }
+                        l(s)
                     }
                 }
             }
