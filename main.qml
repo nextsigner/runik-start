@@ -694,7 +694,7 @@ Window {
         onTriggered: {
             let param = unikObj.getRunikLaunchParameter();
             if (param !== "" && param !== app.uParams) {
-
+                procParams(param)
             }
         }
     }
