@@ -358,7 +358,7 @@ Window {
                 Timer{
                     id: tMkIcon
                     running: false
-                    repeat: false
+                    repeat: true
                     interval: 1000
                     property int v: 0
                     property string iconPath: ''
