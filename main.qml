@@ -12,7 +12,6 @@ import Qt.labs.platform
 
 /*
 import Qt.WebSockets
-*/
 import Qt3D.Animation
 import Qt3D.Core
 import Qt3D.Extras
@@ -20,7 +19,7 @@ import Qt3D.Input
 import Qt3D.Logic
 import Qt3D.Render
 import Qt3D.Scene2D
-
+*/
 
 Window {
     id: app
