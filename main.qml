@@ -29,6 +29,7 @@ Window {
     title: !isRunikStart?"Runik":"Runik!"
     color: apps.backgroundColor
     property int version: 1
+    property string uParams: ''
     property bool dev: false
     property int fs: width*0.035
     property var uAppsList: []
@@ -686,12 +687,17 @@ Window {
             }
         }
     }
-    // Timer{
-    //     running: true
-    //     repeat: true
-    //     interval: 5000
-    //     onTriggered: unik.speak('Hola. Aplicación runik iniciada.')
-    // }
+    Timer{
+        running: true
+        repeat: true
+        interval: 1000
+        onTriggered: {
+            let param = unikObj.getRunikLaunchParameter();
+            if (param !== "" && param !== app.uParams) {
+
+            }
+        }
+    }
     /*Timer {
         id: shortcutTimer
         interval: 5000
@@ -723,24 +729,12 @@ Window {
 
         let param = unikObj.getRunikLaunchParameter();
         if (param !== "") {
+            app.uParams=param
             console.log(">>> La app se abrió desde un acceso directo con el parámetro:", param);
 
             //tit.text='Parámetros:\n'+param
             //tit.font.pixelSize=app.fs*0.5
-            let m00=param.split('|')
-            for(var i0=0; i0 < m00.length; i0++){
-                let arg=m00[i0]
-                if(arg.indexOf('folder=')>=0){
-                    let mArg=arg.split('folder=')
-                    folder=mArg=mArg[1]
-                    mainPath=folder+'/main.qml'
-                    unikObj.cd(folder)
-                    engine.load(mainPath)
-                    app.close()
-                }
-            }
-
-            //txtDato.visible=true
+            procParams(param)
             return
         } else {
             console.log(">>> La app se abrió de forma normal (sin parámetros de shortcut).");
@@ -836,6 +830,26 @@ Window {
     }
 
 
+    function procParams(param){
+        let m00=param.split('|')
+        for(var i0=0; i0 < m00.length; i0++){
+            let arg=m00[i0]
+            if(arg.indexOf('folder=')>=0){
+                let mArg=arg.split('folder=')
+                let folder=mArg[1]
+                let mainPath=folder+'/main.qml'
+                unikObj.cd(folder)
+                engine.load(mainPath)
+                app.close()
+            }
+            if(arg.indexOf('git=')>=0){
+                let mArg=arg.split('git=')
+                tiAppId.text=mArg[1]
+                btnActualizar.run()
+                return
+            }
+        }
+    }
     function l(t){
         log.text+=t+'\n'
         xLog.visible=true
