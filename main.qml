@@ -12,6 +12,7 @@ import Qt.labs.platform
 
 /*
 import Qt.WebSockets
+*/
 import Qt3D.Animation
 import Qt3D.Core
 import Qt3D.Extras
@@ -19,7 +20,7 @@ import Qt3D.Input
 import Qt3D.Logic
 import Qt3D.Render
 import Qt3D.Scene2D
-*/
+
 
 Window {
     id: app
@@ -400,11 +401,11 @@ Window {
                     onClicked: {
                         let s='Lista de parámetros recibidos por Runik:\n'
                         let m0=app.uParams.split('|')
-                        s+='Cantidad de parámetros: '+m0.length+'\n'
+                        s+='Cantidad de parámetros: '+parseInt(m0.length-1)+'\n'
                         for(var i=0;i<m0.length;i++){
                            s+=''+m0[i]+'\n'
                         }
-                        l('P: ['+app.uParams+']\n')
+                        //l('P: ['+app.uParams+']\n')
                         l(s)
                     }
                 }
