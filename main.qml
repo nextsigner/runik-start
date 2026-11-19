@@ -12,6 +12,7 @@ import Qt.labs.platform
 
 /*
 import Qt.WebSockets
+
 import Qt3D.Animation
 import Qt3D.Core
 import Qt3D.Extras
@@ -207,7 +208,8 @@ Window {
                             if(tiAppId.text!=='0' && app.isRunikStart){
                                 apps.uIdApp=tiAppId.text
                             }
-                            app.close()
+                            //app.close()
+                            //app.visible=false
                         }else{
                             msg='No se ha podido descargar '+tiAppId.text+'\n'
                             msg='Hay un error en la url o ha fallado la conexión de internet.\n'
@@ -354,7 +356,7 @@ Window {
                         let label2 = label.charAt(0).toUpperCase() + label.slice(1);
                         let params='folder='+unikObj.getPath(3)+'/runik/'+label+'-main'
                         unikObj.createRunikDesktopShortcut(idIcon, label2, params, iconPath)*/
-                    }                    
+                    }
                 }
                 Timer{
                     id: tMkIcon
@@ -406,6 +408,12 @@ Window {
                         }
                         //l('P: ['+app.uParams+']\n')
                         l(s)
+                    }
+                }
+                Button{
+                    text: '3D!'
+                    onClicked: {
+                        abrirEscena3D()
                     }
                 }
             }
@@ -622,7 +630,8 @@ Window {
                         if(tiAppId.text!=='0' && app.isRunikStart){
                             apps.uIdApp=tiAppId.text
                         }
-                        app.close()
+                        //app.close()
+                        //app.visible=false
                         console.log(msg)
                         statusText.text=msg
 
@@ -640,7 +649,8 @@ Window {
                         if(tiAppId.text!=='0' && app.isRunikStart){
                             apps.uIdApp=tiAppId.text
                         }
-                        app.close()
+                        //app.close()
+                        //app.visible=false
                     }else{
                         msg='No se ha podido descargar '+tiAppId.text+'\n'
                         msg='Hay un error en la url o ha fallado la conexión de internet.\n'
@@ -788,7 +798,8 @@ Window {
             if(unikObj.fileExist(mainPath)){
                 unikObj.cd(folder)
                 engine.load(mainPath)
-                app.close()
+                //app.close()
+                //app.visible=false
                 return
             }else{
                 statusText.text="El archivo "+mainPath+' no existe!'
@@ -847,7 +858,8 @@ Window {
                 let mainPath=folder+'/main.qml'
                 unikObj.cd(folder)
                 engine.load(mainPath)
-                app.close()
+                //app.close()
+                //app.visible=false
             }
             if(arg.indexOf('git=')>=0){
                 let mArg=arg.split('git=')
@@ -993,6 +1005,20 @@ Window {
             xHistorial.visible=true
         }
 
+    }
+    function abrirEscena3D() {
+        var comp = Qt.createComponent("qrc:/Escena3D.qml");
+        if (comp.status === Component.Ready) {
+            var obj = comp.createObject(xApp, {
+                "x": 0,
+                "y": 0,
+                "width": xApp.width,
+                "height": xApp.height,
+                "z": 999
+            });
+        } else if (comp.status === Component.Error) {
+            console.error("Error cargando 3D:", comp.errorString());
+        }
     }
 }
 
