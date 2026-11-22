@@ -34,7 +34,7 @@ Window {
     property bool dev: false
     property int fs: width*0.035
     property var uAppsList: []
-    property bool isRunikStart: true
+    property bool isRunikStart: false
     Settings{
         id: apps
         //fileName: unikObj.getPath(4)+'/runik.cfg'
@@ -356,7 +356,7 @@ Window {
                         let label2 = label.charAt(0).toUpperCase() + label.slice(1);
                         let params='folder='+unikObj.getPath(3)+'/runik/'+label+'-main'
                         unikObj.createRunikDesktopShortcut(idIcon, label2, params, iconPath)*/
-                    }
+                    }                    
                 }
                 Timer{
                     id: tMkIcon
@@ -857,6 +857,7 @@ Window {
                 let folder=mArg[1]
                 let mainPath=folder+'/main.qml'
                 unikObj.cd(folder)
+                unik.addImportPath(folderQml+'/modules')
                 engine.load(mainPath)
                 //app.close()
                 //app.visible=false

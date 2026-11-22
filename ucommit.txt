@@ -1,1 +1,1 @@
-i7: Se agrega boton para probar 3D!
+Se agrega botón 3D y addimportPaths a folder params 2
