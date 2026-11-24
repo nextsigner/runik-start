@@ -885,6 +885,7 @@ Window {
 
 
     function procParams(param){
+        if(app.isRunikStart && param.indexOf('runik-start')>=0)return
         let m00=param.split('|')
         for(var i0=0; i0 < m00.length; i0++){
             let arg=m00[i0]
