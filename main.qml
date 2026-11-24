@@ -834,7 +834,7 @@ Window {
             if(unikObj.fileExist(mainPath)){
                 unikObj.cd(folder)
                 engine.load(mainPath)
-                //app.close()
+                app.close()
                 //app.visible=false
                 return
             }else{
