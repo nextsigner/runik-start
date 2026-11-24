@@ -34,7 +34,7 @@ Window {
     property bool dev: false
     property int fs: width*0.035
     property var uAppsList: []
-    property bool isRunikStart: false
+    property bool isRunikStart: true
     Settings{
         id: apps
         //fileName: unikObj.getPath(4)+'/runik.cfg'
