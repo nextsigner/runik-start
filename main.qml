@@ -210,7 +210,6 @@ Window {
                                 apps.uIdApp=tiAppId.text
                             }
                             app.close()
-                            //app.visible=false
                         }else{
                             msg='No se ha podido descargar '+tiAppId.text+'\n'
                             msg='Hay un error en la url o ha fallado la conexión de internet.\n'
@@ -667,7 +666,6 @@ Window {
                             apps.uIdApp=tiAppId.text
                         }
                         app.close()
-                        //app.visible=false
                         console.log(msg)
                         statusText.text=msg
 
@@ -686,7 +684,6 @@ Window {
                             apps.uIdApp=tiAppId.text
                         }
                         app.close()
-                        //app.visible=false
                     }else{
                         msg='No se ha podido descargar '+tiAppId.text+'\n'
                         msg='Hay un error en la url o ha fallado la conexión de internet.\n'
@@ -762,6 +759,7 @@ Window {
         }
     }*/
     Component.onCompleted: {
+        if(app.isRunikStart)iconApp.source='file://'+unikObj.getPath(3)+'/runik/runik-start/logo.png'
         //let version=1
         let nVersionRunikStart=app.version
         let versionFp=unikObj.getPath(3)+'/runik/runik-start/version'
@@ -783,10 +781,6 @@ Window {
         let param = unikObj.getRunikLaunchParameter();
         if (param !== "") {
             app.uParams=param
-            console.log(">>> La app se abrió desde un acceso directo con el parámetro:", param);
-
-            //tit.text='Parámetros:\n'+param
-            //tit.font.pixelSize=app.fs*0.5
             procParams(param)
             return
         } else {
@@ -835,7 +829,6 @@ Window {
                 unikObj.cd(folder)
                 engine.load(mainPath)
                 app.close()
-                //app.visible=false
                 return
             }else{
                 statusText.text="El archivo "+mainPath+' no existe!'
@@ -897,7 +890,6 @@ Window {
                 unik.addImportPath(folder+'/modules')
                 engine.load(mainPath)
                 if(!app.isRunikStart)app.close()
-                //app.visible=false
                 return
             }
             if(arg.indexOf('git=')>=0){
