@@ -588,7 +588,7 @@ Window {
             spacing: app.fs
             anchors.centerIn: parent
             Text{
-                text: 'Descargando '+xInfoDownload.appId
+                text: 'Descargando '+unikObj.cProject//xInfoDownload.appId
                 font.pixelSize: app.fs*1.5
                 color: apps.fontColor
                 anchors.horizontalCenter: parent.horizontalCenter
