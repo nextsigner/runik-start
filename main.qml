@@ -50,6 +50,7 @@ Window {
             //if(Qt.platform.os==='linux' && app.enableQmlErrorLog && apps.dev && ap){
             //app.flags=Qt.Window
             //app.visibility="Maximized"
+            if(!app.isRunikStart && !app.dev)return
             let msg=qmlErrorLogger.messages[qmlErrorLogger.messages.length-1]
             if(msg.indexOf('Failed to start frame')<0){
                 l(msg)
@@ -208,7 +209,7 @@ Window {
                             if(tiAppId.text!=='0' && app.isRunikStart){
                                 apps.uIdApp=tiAppId.text
                             }
-                            //app.close()
+                            app.close()
                             //app.visible=false
                         }else{
                             msg='No se ha podido descargar '+tiAppId.text+'\n'
@@ -577,6 +578,33 @@ Window {
         }
 
     }
+    Rectangle{
+        id: xInfoDownload
+        color: apps.backgroundColor
+        anchors.fill: xApp
+        visible: tMkIcon.running
+        property int p: 0
+        property string appId: 'appId?'
+        Column{
+            spacing: app.fs
+            anchors.centerIn: parent
+            Text{
+                text: 'Descargando '+xInfoDownload.appId
+                font.pixelSize: app.fs*1.5
+                color: apps.fontColor
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            Text{
+                id: pd
+                text: '%'+progressBar.value//xInfoDownload.p
+                font.pixelSize: app.fs*4
+                color: apps.fontColor
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+
+    }
+
     Item {
         Unik {
             id: unikObj
@@ -587,6 +615,11 @@ Window {
                 let msg=""
                 if (bytesTotal > 0) {
                     let percent = (bytesReceived / bytesTotal) * 100;
+                    console.log('Porcentaje: '+percent)
+                    pd.text='% '+percent
+                    xInfoDownload.appId=unikObj.cProject
+                    xInfoDownload.p=percent
+                    xInfoDownload.visible=true
                     msg="Progreso: " + percent.toFixed(2) + "% (" + bytesReceived + " / " + bytesTotal + " bytes)"
                     console.log(msg);
                     statusText.text=msg
@@ -599,6 +632,9 @@ Window {
             }
             onDownloadFinished: function(success, filePath) {
                 apps.uIdApp=unikObj.uUrl
+                xInfoDownload.appId=''
+                xInfoDownload.p=0
+                xInfoDownload.visible=false
                 let msg=""
                 let folder=''
                 if(Qt.platform.os==='android'){
@@ -630,7 +666,7 @@ Window {
                         if(tiAppId.text!=='0' && app.isRunikStart){
                             apps.uIdApp=tiAppId.text
                         }
-                        //app.close()
+                        app.close()
                         //app.visible=false
                         console.log(msg)
                         statusText.text=msg
@@ -649,7 +685,7 @@ Window {
                         if(tiAppId.text!=='0' && app.isRunikStart){
                             apps.uIdApp=tiAppId.text
                         }
-                        //app.close()
+                        app.close()
                         //app.visible=false
                     }else{
                         msg='No se ha podido descargar '+tiAppId.text+'\n'
@@ -798,7 +834,7 @@ Window {
             if(unikObj.fileExist(mainPath)){
                 unikObj.cd(folder)
                 engine.load(mainPath)
-                //app.close()
+                app.close()
                 //app.visible=false
                 return
             }else{
@@ -857,9 +893,9 @@ Window {
                 let folder=mArg[1]
                 let mainPath=folder+'/main.qml'
                 unikObj.cd(folder)
-                unik.addImportPath(folderQml+'/modules')
+                unik.addImportPath(folder+'/modules')
                 engine.load(mainPath)
-                //app.close()
+                app.close()
                 //app.visible=false
             }
             if(arg.indexOf('git=')>=0){

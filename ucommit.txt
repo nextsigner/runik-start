@@ -1,1 +1,1 @@
-Se agrega botón 3D y addimportPaths a folder params 2
+i7: Se copia de Main.qml v1.11.24.0
