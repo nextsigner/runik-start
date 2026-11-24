@@ -581,7 +581,6 @@ Window {
         id: xInfoDownload
         color: apps.backgroundColor
         anchors.fill: xApp
-        visible: tMkIcon.running
         property int p: 0
         property string appId: 'appId?'
         Column{
