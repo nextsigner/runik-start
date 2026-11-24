@@ -1,1 +1,1 @@
-i7: Se copia de Main.qml v1.11.24.0
+Se actualiza icono con filtro rojo
