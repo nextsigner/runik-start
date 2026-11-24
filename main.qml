@@ -209,7 +209,7 @@ Window {
                             if(tiAppId.text!=='0' && app.isRunikStart){
                                 apps.uIdApp=tiAppId.text
                             }
-                            //app.close()
+                            app.close()
                             //app.visible=false
                         }else{
                             msg='No se ha podido descargar '+tiAppId.text+'\n'
@@ -666,7 +666,7 @@ Window {
                         if(tiAppId.text!=='0' && app.isRunikStart){
                             apps.uIdApp=tiAppId.text
                         }
-                        //app.close()
+                        app.close()
                         //app.visible=false
                         console.log(msg)
                         statusText.text=msg
@@ -685,7 +685,7 @@ Window {
                         if(tiAppId.text!=='0' && app.isRunikStart){
                             apps.uIdApp=tiAppId.text
                         }
-                        //app.close()
+                        app.close()
                         //app.visible=false
                     }else{
                         msg='No se ha podido descargar '+tiAppId.text+'\n'
@@ -895,8 +895,9 @@ Window {
                 unikObj.cd(folder)
                 unik.addImportPath(folder+'/modules')
                 engine.load(mainPath)
-                app.close()
+                if(!app.isRunikStart)app.close()
                 //app.visible=false
+                return
             }
             if(arg.indexOf('git=')>=0){
                 let mArg=arg.split('git=')
