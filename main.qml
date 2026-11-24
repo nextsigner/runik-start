@@ -895,7 +895,7 @@ Window {
                 unikObj.cd(folder)
                 unik.addImportPath(folder+'/modules')
                 engine.load(mainPath)
-                //app.close()
+                app.close()
                 //app.visible=false
             }
             if(arg.indexOf('git=')>=0){
