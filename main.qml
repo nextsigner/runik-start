@@ -759,7 +759,8 @@ Window {
         }
     }*/
     Component.onCompleted: {
-        if(app.isRunikStart)iconApp.source='file://'+unikObj.getPath(3)+'/runik/runik-start/logo.png'
+        let logoRunikStart=unikObj.getPath(3)+'/runik/runik-start-main/logo.png'
+        if(app.isRunikStart && unikObj.fileExist(logoRunikStart))iconApp.source='file://'+logoRunikStart
         //let version=1
         let nVersionRunikStart=app.version
         let versionFp=unikObj.getPath(3)+'/runik/runik-start/version'
